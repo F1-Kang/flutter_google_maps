@@ -11,6 +11,7 @@ class GoogleMapsPage extends HookWidget {
     final mapController = useState<GoogleMapController?>(null);
     final currentLocation = useState<LatLng?>(null);
     final location = useMemoized(() => Location());
+    final circles = useState<Set<Circle>>({});
 
     useEffect(() {
       Future<void> checkPermissions() async {
@@ -45,6 +46,24 @@ class GoogleMapsPage extends HookWidget {
             currentLocationData.longitude!,
           );
           currentLocation.value = latLng;
+
+          // Cập nhật vòng tròn bán kính 5km
+          circles.value = {
+            Circle(
+              circleId: const CircleId('myCircle'),
+              // ID duy nhất cho vòng tròn
+              center: latLng,
+              // Tâm của vòng tròn
+              radius: 2000,
+              // Bán kính (mét) - 5km
+              fillColor: Colors.blue.withOpacity(0.2),
+              // Màu tô và độ trong suốt
+              strokeColor: Colors.blue,
+              // Màu viền
+              strokeWidth: 2, // Độ dày viền
+            ),
+          };
+
           // Di chuyển camera đến vị trí mới (nếu muốn)
           mapController.value?.animateCamera(
             CameraUpdate.newCameraPosition(
@@ -78,6 +97,7 @@ class GoogleMapsPage extends HookWidget {
                   infoWindow: const InfoWindow(title: 'Vị trí của bạn'),
                 ),
               },
+              circles: circles.value,
               myLocationEnabled: true,
               myLocationButtonEnabled: true,
             ),

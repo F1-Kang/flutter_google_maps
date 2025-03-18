@@ -38,6 +38,8 @@ class LocationPage extends HookWidget {
 
     if (locationStream.hasData) {
       final data = locationStream.data!;
+      print('Latitude => ${data.latitude}');
+      print('Longitude => ${data.longitude}');
       return Scaffold(
         appBar: AppBar(title: const Text('Location Hook')),
         body: Center(
